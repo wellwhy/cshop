@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+    background: #000000;
+}
+* {
+   cursor: url('cursor.png'), pointer;
+}
+.three_js_container_1 {
+    image-rendering: pixelated;
+    pointer-events: none;
+    position: absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    height: 10px;
+    width: 10px;
+    z-index: -1;
+}
+</style>
+
+<html>
+<body onresize="repositionElements()">
+
+<div id="three_js_container_1" class="three_js_container_1"></div>
+
+</body>
+</html>
+
+<script>
+repositionElements();
+function repositionElements(){
+document.getElementById("three_js_container_1").style.width = "" + window.innerWidth + "px";
+document.getElementById("three_js_container_1").style.height = "" + window.innerHeight + "px";
+}
+</script>
+
+<script src="js/three.js"></script>
+<script src="js/GLTFLoader.js"></script>
+<script src="js/DDSLoader.js"></script>
+
+<script type="x-shader/x-vertex" id="vertexShader">
+    varying vec3 vUv;
+    void main(){
+        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        //modelViewPosition.xyz = floor(modelViewPosition.xyz * 40.0) / 40.0;
+        //vec4 snapToWorldPoint = modelViewPosition;
+        //modelViewPosition.xyz = snapToWorldPoint.xyz / snapToWorldPoint.w;
+		//modelViewPosition.x = floor(260.0 * modelViewPosition.x) / 260.0;
+		//modelViewPosition.y = floor(220.0 * modelViewPosition.y) / 220.0;
+        //modelViewPosition.xyz *= snapToWorldPoint.w;
+        gl_Position = projectionMatrix * modelViewPosition;
+        vec4 snapToPixel = gl_Position;
+        gl_Position.xyz = snapToPixel.xyz / snapToPixel.w;
+		gl_Position.x = floor(160.0 * gl_Position.x) / 160.0;
+		gl_Position.y = floor(120.0 * gl_Position.y) / 120.0;
+        gl_Position.xyz *= snapToPixel.w;
+        
+        vUv = vec3(uv * gl_Position.w, gl_Position.w );
+        float distance = length(modelViewPosition);
+        //vUv *= distance + (gl_Position.w) / distance / 2.0;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentShader">
+    uniform sampler2D texture1;
+    varying vec3 vUv;
+
+    void main(){
+        vec4 color = texture2D(texture1, vUv.xy / vUv.z);
+        if(color.a < 0.9)
+            discard;
+        gl_FragColor = mix(color,vec4(0,0,0,1),.3);
+        //gl_FragColor = texture2D(texture1,vUv);
+    }
+</script>
+
+<script>
+
+var clock = new THREE.Clock();
+var scene = new THREE.Scene();
+var container = document.getElementById("three_js_container_1");
+var camera = new THREE.PerspectiveCamera( 59, container.offsetWidth/container.offsetHeight, 0.00001, 10000 );
+const renderer = new THREE.WebGLRenderer({container,alpha: true,antialias:false});
+renderer.setClearColor( 0x000000 ); 
+var loader = new THREE.GLTFLoader();
+renderer.setPixelRatio( .25 );
+var light = new THREE.HemisphereLight( 0xffffff, 0xffffff, 1 );
+renderer.gammaOutput = true;
+// scene.fog = new THREE.Fog(0xff0000,0.1,2000);
+//scene.add( light );
+
+var skyGeo = new THREE.SphereGeometry(500, 25, 25);
+var skytex  = new THREE.TextureLoader().load( "skytex.png" );
+skytex.minFilter = THREE.NearestFilter;
+skytex.magFilter = THREE.NearestFilter;
+skytex.encoding = THREE.sRGBEncoding;
+var skymat = new THREE.MeshBasicMaterial( { map: skytex} );
+skymat.side = THREE.DoubleSide;
+var sky = new THREE.Mesh(skyGeo, skymat);
+skyGeo.frustumCulled = false;
+scene.add(sky);
+
+// {
+//   const loader2 = new THREE.CubeTextureLoader();
+//   const texture = loader2.load([
+//     'spacecubemap3/x+.png',
+//     'spacecubemap3/x-.png',
+//     'spacecubemap3/y+.png',
+//     'spacecubemap3/y-.png',
+//     'spacecubemap3/z+.png',
+//     'spacecubemap3/z-.png',
+//   ]);
+//   scene.background = texture;
+// }
+var ps1_shader_material = new THREE.ShaderMaterial({ 
+    skinning: true,
+    uniforms: { texture1: {type: "t", value: null} },
+    vertexShader: document.getElementById('vertexShader').textContent,
+    fragmentShader: document.getElementById('fragmentShader').textContent,
+    });
+
+
+var model_3;
+loader.load( 'shoppe_no_door.glb', async ( gltf ) => {
+    const textures = await gltf.parser.getDependencies( 'texture' );
+    console.log(textures);
+    model_3 = gltf.scene || gltf.scenes[0];
+    console.log(model_3);
+    //var tex_i = [4,0,1,3,2,-1,-1,-1,-1];
+    //var tex_i = [4,0,1,3,2,-1,-1,-1,-1];
+    //[tree,hut,?,moss,hut,?,?,buildings,skyscraper]
+    var tex_i = [5,0,0,0,0,0,4,2,3];
+    var i = 0;
+    gltf.scene.traverse((object) => {
+  if (object.isMesh) {
+    object.frustumCulled = false;
+    object.material.map.minFilter = THREE.NearestFilter;
+    object.material.map.magFilter = THREE.NearestFilter;
+    var temp = object.material.map;
+    object.material = new THREE.ShaderMaterial({ 
+    uniforms: { texture1: {type: "t", value: null} },
+    vertexShader: document.getElementById('vertexShader').textContent,
+    fragmentShader: document.getElementById('fragmentShader').textContent,
+    });
+    object.material.side = THREE.DoubleSide;
+    console.log(tex_i[i]);
+    object.material.uniforms.texture1.value = textures[tex_i[i]];
+    i++;
+}
+});
+    // gltf.animations.forEach( ( clip ) => {
+
+    //     mixer.clipAction( clip ).play();
+        
+    // } );
+    
+    // model_1.position.x = -.5;
+    // model_1.position.y = -1.5;
+    // model_1.rotation.y = Math.random() * 360;
+
+    scene.add( model_3 );
+}, undefined, function ( error ) {
+	console.error( error );
+} );
+
+var model_2;
+var mixer2;
+loader.load( 'unsubdivided_door_with_animation.glb', function ( gltf ) {
+    model_2 = gltf.scene;
+    //console.log(model_1);
+    var mesh = model_2.children[0].children[1];
+
+    gltf.scene.traverse((object) => {
+  if (object.isMesh) {
+    object.frustumCulled = false;
+    object.material.map.minFilter = THREE.NearestFilter;
+    object.material.map.magFilter = THREE.NearestFilter;
+    var temp = object.material.map;
+    //object.material = ps1_shader_material; 
+    object.material = new THREE.MeshBasicMaterial( {skinning:true});
+    object.material.map = temp;
+    object.material.side = THREE.DoubleSide;
+
+    const vertexShaderReplacement = [
+        {
+            from: '#include <project_vertex>',
+                to: `
+                vec4 mvPosition = vec4( transformed, 1.0 );
+                #ifdef USE_INSTANCING
+                    mvPosition = instanceMatrix * mvPosition;
+                #endif
+                mvPosition = modelViewMatrix * mvPosition;
+                gl_Position = projectionMatrix * mvPosition;
+                        vec4 snapToPixel = gl_Position;
+                        gl_Position.xyz = snapToPixel.xyz / snapToPixel.w;
+                        gl_Position.x = floor(160.0 * gl_Position.x) / 160.0;
+                        gl_Position.y = floor(120.0 * gl_Position.y) / 120.0;
+                        gl_Position.xyz *= snapToPixel.w;
+            `,
+        },
+    ];
+    object.material.onBeforeCompile = (shader) => {
+    vertexShaderReplacement.forEach((rep) => {
+        shader.vertexShader = shader.vertexShader.replace(rep.from, rep.to);
+    });
+    };
+  }
+});
+    // mesh.geometry.boundingBox = new THREE.Box3(-1000,1000);
+    // helper = new THREE.SkeletonHelper(model_1); //Show skeleton
+    // helper.material.lineWidth = 1;
+    // helper.visible = true;
+    // helper.frustumCulled = false;
+    mixer2 = new THREE.AnimationMixer( model_2 );
+    var action2 = mixer2.clipAction( gltf.animations[ 5 ] );
+    action2.setLoop( THREE.LoopOnce );
+	action2.play();
+    // gltf.animations.forEach( ( clip ) => {
+
+    //     mixer.clipAction( clip ).play();
+        
+    // } );
+    
+    // model_1.position.x = -.5;
+    // model_1.position.y = -1.5;
+    // model_1.rotation.y = Math.random() * 360;
+
+    scene.add( model_2 );
+    // scene.add(helper);
+}, undefined, function ( error ) {
+	console.error( error );
+} );
+
+// camera.position.z = 100;
+// camera.position.y = 50;
+var model_1;
+var mixer;
+var skeleton_1;
+var helper_2;
+loader.load( 'final_animation_claw.fbx.glb', function ( gltf ) {
+    model_1 = gltf.scene;
+    //console.log(model_1);
+    var mesh = model_1.children[0].children[1];
+
+    gltf.scene.traverse((object) => {
+  if (object.isMesh) {
+    object.frustumCulled = false;
+    object.material.map.minFilter = THREE.NearestFilter;
+    object.material.map.magFilter = THREE.NearestFilter;
+    var temp = object.material.map;
+    //object.material = ps1_shader_material; 
+    object.material = new THREE.MeshBasicMaterial( {skinning:true});
+    object.material.map = temp;
+    object.material.side = THREE.DoubleSide;
+
+    const vertexShaderReplacement = [
+        {
+            from: '#include <project_vertex>',
+                to: `
+                vec4 mvPosition = vec4( transformed, 1.0 );
+                #ifdef USE_INSTANCING
+                    mvPosition = instanceMatrix * mvPosition;
+                #endif
+                mvPosition = modelViewMatrix * mvPosition;
+                gl_Position = projectionMatrix * mvPosition;
+                        vec4 snapToPixel = gl_Position;
+                        gl_Position.xyz = snapToPixel.xyz / snapToPixel.w;
+                        gl_Position.x = floor(160.0 * gl_Position.x) / 160.0;
+                        gl_Position.y = floor(120.0 * gl_Position.y) / 120.0;
+                        gl_Position.xyz *= snapToPixel.w;
+            `,
+        },
+    ];
+    object.material.onBeforeCompile = (shader) => {
+    vertexShaderReplacement.forEach((rep) => {
+        shader.vertexShader = shader.vertexShader.replace(rep.from, rep.to);
+    });
+    };
+  }
+});
+    // mesh.geometry.boundingBox = new THREE.Box3(-1000,1000);
+    // helper = new THREE.SkeletonHelper(model_1); //Show skeleton
+    // helper.material.lineWidth = 1;
+    // helper.visible = true;
+    // helper.frustumCulled = false;
+    mixer = new THREE.AnimationMixer( model_1 );
+    var action = mixer.clipAction( gltf.animations[ 7 ] );
+    action.setLoop( THREE.LoopOnce );
+    //action.timeScale = 4;
+	action.play();
+    // gltf.animations.forEach( ( clip ) => {
+
+    //     mixer.clipAction( clip ).play();
+        
+    // } );
+    
+    // model_1.position.x = -.5;
+    // model_1.position.y = -1.5;
+    // model_1.rotation.y = Math.random() * 360;
+
+    scene.add( model_1 );
+    // scene.add(helper);
+}, undefined, function ( error ) {
+	console.error( error );
+} );
+// var axesHelper = new THREE.AxesHelper( 500 );
+// axesHelper.position.x += 20;
+// axesHelper.position.z += 10;
+// axesHelper.position.y += 2;
+// scene.add( axesHelper );
+// scene.traverse( function( object ) {
+
+// object.frustumCulled = false;
+
+// } );
+// camera.position.y = 160;
+renderer.setSize(container.offsetWidth,container.offsetHeight);
+container.appendChild( renderer.domElement );
+var once = true;
+function animate() {
+    if(model_1 && once){
+        once = false;
+        console.log("once");
+        model_1.children[0].children[1].skeleton.bones[0].add(camera);
+        scene.add(model_1);
+        camera.rotation.y = 1.5708;
+        camera.position.x = .0001;
+        camera.position.y = .025;
+    }
+    
+    var id = requestAnimationFrame( animate );
+    if(id == 5200) //stops animation when in black box
+        cancelAnimationFrame( id );
+    var delta = clock.getDelta();
+    if ( mixer ) mixer.update( delta );
+    if ( mixer2 ) mixer2.update( delta );
+    
+    renderer.render( scene, camera );
+}
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+}
+animate();
+</script>
+
+<!-- // camera.position.y -= .0001;
+    // //     model_1.traverse( function( object ) {
+    // //         if(object instanceof THREE.Bone) {
+    // //             object.updateMatrixWorld(true);
+    // //         }
+    // //     } );
+    //     model_1.children[0].children[1].skeleton.bones[0].updateWorldMatrix();
+    //     //this will get the world position of the bone (bone[6].position is local or something, not sure)
+    //     // model_1.children[0].children[1].skeleton.update();
+    //     var p = new THREE.Vector3();
+    //     var q = new THREE.Quaternion();
+    //     var s = new THREE.Vector3();
+    //     model_1.children[0].children[1].skeleton.bones[0].matrixWorld.decompose(p, q, s); //sets by reference
+    //     camera.position.x = p.x;
+    //     camera.position.y = p.y;
+    //     camera.position.z = p.z + 1;
+    //     q.normalize();
+    //     //console.log("q: ");
+    //     //console.log(q);
+    //     var up = new THREE.Vector3( 0, 1, 0);
+    //     up.applyQuaternion(q);
+    //     up.normalize();
+    //     var turn = new THREE.Quaternion();
+    //     turn.setFromAxisAngle(up,1.5708);
+    //     //turn.multiply(q);
+    //     //camera.translateOnAxis(up,.5);
+    //     axesHelper.position.x = p.x;
+    //     axesHelper.position.y = p.y;
+    //     axesHelper.position.z = p.z;
+    //     //axesHelper.setRotationFromQuaternion(q);
+    //     //camera.setRotationFromQuaternion(turn);
+    //     //camera.rotate
+    //     //console.log("q:");
+    //     var rotation = new THREE.Euler().setFromQuaternion( q );
+    //     rotation.x *= 57.2958;
+    //     rotation.y *= 57.2958;
+    //     rotation.z *= 57.2958;
+    //     //console.log(rotation);
+    //     //camera.rotateOnAxis(up,1.5708); -->

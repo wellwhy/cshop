@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="style.css" rel="stylesheet" type="text/css">
+
+<body onresize="repositionElements()">
+<div id="banner">
+    <!-- single line makes no space between them -->
+<img class="bannerimgtop" src="logo.gif"></img>
+<a href="https://www.instagram.com/_curiosity_shop_" target="_blank"><img class="bannerimgtop" src="geocities/instagram.gif"></img></a>
+<img class="bannerimg" src="geocities/cauldron.gif"></img>
+<a href="https://soundcloud.com/curiosityshoppp" target="_blank"><img class="bannerimgtop" src="geocities/soundcloud.gif"></img></a>
+<img class="bannerimg" src="geocities/potion.gif"></img>
+<a href="https://twitter.com/CURIOSITYSHOP__" target="_blank"><img class="bannerimgtop" src="geocities/twitter.gif"></img></a>
+<img class="bannerimg" src="geocities/orb.gif"></img>
+<img class="bannerimg" src="geocities/swampthing.gif"></img>
+<img class="bannerimg" src="geocities/tree.gif"></img>
+<img class="bannerimg" src="geocities/mother.gif"></img>
+<img class="bannerimg" src="geocities/pond.gif"></img>
+<img class="bannerimg" src="geocities/birdo.gif"></img>
+<img class="bannerimg" src="geocities/creature.gif"></img>
+<img class="bannerimg" src="geocities/orb.gif"></img>
+<img class="bannerimg" src="geocities/swampthing.gif"></img>
+<img class="bannerimg" src="geocities/tree.gif"></img>
+<img class="bannerimg" src="geocities/mother.gif"></img>
+<img class="bannerimg" src="geocities/pond.gif"></img>
+<img class="bannerimg" src="geocities/birdo.gif"></img>
+<img class="bannerimg" src="geocities/creature.gif"></img>
+<img class="bannerimg" src="geocities/orb.gif"></img>
+<img class="bannerimg" src="geocities/swampthing.gif"></img>
+<img class="bannerimg" src="geocities/tree.gif"></img>
+<img class="bannerimg" src="geocities/mother.gif"></img>
+<img class="bannerimg" src="geocities/pond.gif"></img>
+<img class="bannerimg" src="geocities/birdo.gif"></img>
+<img class="bannerimg" src="geocities/creature.gif"></img>
+<img class="bannerimg" src="geocities/orb.gif"></img>
+<img class="bannerimg" src="geocities/swampthing.gif"></img>
+<img class="bannerimg" src="geocities/tree.gif"></img>
+<img class="bannerimg" src="geocities/mother.gif"></img>
+<img class="bannerimg" src="geocities/pond.gif"></img>
+<img class="bannerimg" src="geocities/birdo.gif"></img>
+<img class="bannerimg" src="geocities/creature.gif"></img>
+<img class="bannerimg" src="geocities/orb.gif"></img>
+<img class="bannerimg" src="geocities/swampthing.gif"></img>
+<img class="bannerimg" src="geocities/tree.gif"></img>
+<img class="bannerimg" src="geocities/mother.gif"></img>
+<img class="bannerimg" src="geocities/pond.gif"></img>
+<img class="bannerimg" src="geocities/birdo.gif"></img>
+<img class="bannerimg" src="geocities/creature.gif"></img>
+<img class="bannerimgtop" src="logo.gif"></img>
+</div>
+<video style="display:none;" muted autoplay id="videotexture" src="gan.mp4"></video>
+<div id="three_js_container_1"></div>
+
+
+<div id="box_for_container_4">
+<div id="three_js_container_4"></div>
+<div id="box_for_container_2">
+    <img id="info2" style="opacity:0%; position: absolute; width:100%; height:auto; pointer-events: none;" src="clicked.gif"></img>
+    <div id="three_js_container_2"></div>
+    <div style="text-align: center;" class="titlediv"><img class="titletextimage" src="sv1text.gif"></img></div>
+    <!-- this overflow, i knows -->
+</div>
+
+<div id="box_for_container_3">
+    <div id="three_js_container_3"></div>
+    <div style="text-align: center;" class="titlediv"><img class="titletextimage" src="sv1text.gif"></img></div>
+    <!-- this overflow, i knows -->
+</div>
+</div>
+
+
+<iframe style="display:none;" width="0%" height="0" scrolling="no" frameborder="no" allow="autoplay" 
+src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/816733732&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="display:none"></a></div>
+</body>
+
+<script src="js/anime.min.js"></script>
+
+<script>
+var three_js_container_1 = document.getElementById("three_js_container_1");
+var three_js_container_4 = document.getElementById("three_js_container_4");
+var banner = document.getElementById("banner");
+
+repositionElements();
+
+// var test = anime({
+//   targets: '#three_js_container_2',
+// //   translateX: 250,
+//   rotate: '1turn',
+// //   backgroundColor: '#FFF',
+//   duration: 800
+// });
+
+function repositionElements(){
+three_js_container_1.style.width = "" + window.innerWidth + "px";
+
+if(parseInt(window.innerHeight) > 1440){
+    three_js_container_1.style.height = "" + window.innerHeight + "px";
+}
+else{
+    three_js_container_1.style.height = "" + "1440" + "px";
+}
+
+
+
+
+three_js_container_4.style.width = "" + 850 + "px"; //this is broken on mobile
+three_js_container_4.style.height = "" + 1440 + "px";
+
+
+// banner.style.width = "" + window.innerWidth + "px";
+//items, square
+}
+</script>
+
+<script src="js/jquery-3.5.0.min.js"></script>
+<script src="js/three.js"></script>
+<script src="js/GLTFLoader.js"></script>
+<script src="js/DDSLoader.js"></script>
+
+<script type="x-shader/x-vertex" id="vertexShader">
+    varying vec2 vUv;
+
+    void main(){
+        vUv = uv;
+        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        modelViewPosition.xyz = floor(modelViewPosition.xyz * 20.0) / 20.0;
+        gl_Position = projectionMatrix * modelViewPosition;
+        gl_Position /= gl_Position.w;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentShader">
+    uniform sampler2D texture1;
+    varying vec2 vUv;
+
+    void main(){
+        gl_FragColor = texture2D(texture1,vUv);
+    }
+</script>
+
+
+<script type="x-shader/x-vertex" id="rippleVertexShader">
+    precision highp float;
+    attribute vec2 position;
+
+    void main(){
+        gl_Position = vec4(position, 1.0, 1.0);
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="rippleFragmentShader">
+    precision highp float;
+    const float PI = 3.14159265359;
+    const float TAU = 6.28318530718;
+    uniform vec2 uResolution;
+    uniform float time;
+    uniform sampler2D ripples_tex;
+
+    void main(){
+        //vec2 uv = gl_FragCoord.xy / uResolution.xy;
+        //vec3 color = vec3(time, 0.0 , 0.0);
+        //gl_FragColor =  vec4(color, 1.0);
+
+
+	vec2 uv = gl_FragCoord.xy / uResolution.xy;
+    uv -= 0.5;
+    
+    vec4 color = texture2D(ripples_tex, uv + 0.5);
+    
+    uv.x *= uResolution.x/uResolution.y;
+    float d = length(uv);
+    uv.x *= uResolution.y/uResolution.x;
+    
+    float speed = 0.15; // + (time * 0.02); // womp-womp
+    float radius = speed * (time + 138.0);
+    float thickness = 0.5; // + (time * 0.02); // womp-womp
+    
+    float blend = smoothstep(radius-thickness, radius-thickness-0.05, d);
+    float distort = cos(((d-(radius-thickness))/thickness)*(PI/2.0));
+    
+    //color = texture2D(ripples_tex, uv + 0.5);
+    color = mix(color, texture2D(ripples_tex, (uv * (distort*1.0)) + 0.5), blend);
+    //color.r = color.r * pow(2.0,3.0) / 1.0;
+    //color.g = color.g * pow(2.0,2.0) / 1.0;
+    //color.b = color.b * pow(2.0,3.0) / 1.0;
+    color.r = floor(color.r * 3.0 + 0.3) / 3.0;
+    color.g = floor(color.g * 3.0 + 0.3) / 3.0;
+    color.b = floor(color.b * 3.0 + 0.3) / 3.0;
+    
+
+    gl_FragColor = color;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="fractalFragmentShader">
+    precision highp float;
+    const float PI = 3.14159265359;
+    const float TAU = 6.28318530718;
+    uniform vec4 mr;
+    uniform sampler2D shop;
+    uniform sampler2D cover_art;
+    uniform vec2 uResolution;
+    uniform float mix_amt;
+    uniform float cover_mix_amt;
+
+    void main(){
+    vec2 p = gl_FragCoord.xy;
+    vec2 q = (p + p - mr.ba) / mr.b;
+    for(int i = 0; i < 5; i++) {
+         q = abs(q)/dot(q,q) -  mr.xy/mr.zw;
+    }
+    vec4 fractal = vec4(q, q.x/q.y, 1.0);
+    vec2 uv = gl_FragCoord.xy / uResolution.xy;
+    uv.x *= uResolution.x/uResolution.y; //I DID THIS IT MAKES THE SHOP TEXTURE LOOK BETTER
+    vec4 temp1 = texture2D(cover_art,uv);
+    vec4 temp2 = texture2D(shop,uv);
+    vec4 temp3 = vec4(temp1.r+temp2.r, temp1.g+temp2.g, temp1.b+temp2.b, 1.0);
+    gl_FragColor = mix(fractal, temp2 ,mix_amt);
+    //gl_FragColor = vec4(time,0.0,1.0,1.0);
+    //gl_FragColor = color;
+    }
+</script>
+<script src="js/scene.js"></script>
