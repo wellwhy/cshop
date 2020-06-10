@@ -54,8 +54,8 @@ document.getElementById("three_js_container_1").style.height = "" + window.inner
         gl_Position = projectionMatrix * modelViewPosition;
         vec4 snapToPixel = gl_Position;
         gl_Position.xyz = snapToPixel.xyz / snapToPixel.w;
-		gl_Position.x = floor(160.0 * gl_Position.x) / 160.0;
-		gl_Position.y = floor(120.0 * gl_Position.y) / 120.0;
+		gl_Position.x = floor(120.0 * gl_Position.x) / 120.0;
+		gl_Position.y = floor(100.0 * gl_Position.y) / 100.0;
         gl_Position.xyz *= snapToPixel.w;
         
         vUv = vec3(uv * gl_Position.w, gl_Position.w );
@@ -124,13 +124,13 @@ var ps1_shader_material = new THREE.ShaderMaterial({
 
 
 var model_3;
-loader.load( 'shoppe_no_door.glb', async ( gltf ) => {
+loader.load( 'deliver_sub_4.glb', async ( gltf ) => {
     //const textures = await gltf.parser.getDependencies( 'texture' );
     // console.log(textures);
     load_txtrs();
     console.log(txtrs);
     model_3 = gltf.scene || gltf.scenes[0];
-    //console.log(model_3);
+    console.log(model_3);
 
     for(var i = 0; i < 5; i++){
         var currChild = model_3.children[i];
@@ -148,7 +148,7 @@ loader.load( 'shoppe_no_door.glb', async ( gltf ) => {
                     currChild.material.uniforms.texture1.value = txtrs[0];
                 break;
             case "Hut":
-                for(var j = 0; j < 5; j++){
+                for(var j = 0; j < 2; j++){
                     var currGroupChild = currChild.children[j];
                     currGroupChild.material = new THREE.ShaderMaterial({ 
                         uniforms: { texture1: {type: "t", value: null} },
@@ -228,7 +228,7 @@ loader.load( 'shoppe_no_door.glb', async ( gltf ) => {
 var model_2;
 var mixer2;
 var action2;
-loader.load( 'unsubdivided_door_with_animation.glb', function ( gltf ) {
+loader.load( 'fixedwhitethingdoor2.glb', function ( gltf ) {
     model_2 = gltf.scene;
     //console.log(model_1);
     var mesh = model_2.children[0].children[1];
@@ -256,8 +256,8 @@ loader.load( 'unsubdivided_door_with_animation.glb', function ( gltf ) {
                 gl_Position = projectionMatrix * mvPosition;
                         vec4 snapToPixel = gl_Position;
                         gl_Position.xyz = snapToPixel.xyz / snapToPixel.w;
-                        gl_Position.x = floor(160.0 * gl_Position.x) / 160.0;
-                        gl_Position.y = floor(120.0 * gl_Position.y) / 120.0;
+                        gl_Position.x = floor(120.0 * gl_Position.x) / 120.0;
+                        gl_Position.y = floor(100.0 * gl_Position.y) / 100.0;
                         gl_Position.xyz *= snapToPixel.w;
             `,
         },
@@ -328,8 +328,8 @@ loader.load( 'final_animation_claw.fbx.glb', function ( gltf ) {
                 gl_Position = projectionMatrix * mvPosition;
                         vec4 snapToPixel = gl_Position;
                         gl_Position.xyz = snapToPixel.xyz / snapToPixel.w;
-                        gl_Position.x = floor(160.0 * gl_Position.x) / 160.0;
-                        gl_Position.y = floor(120.0 * gl_Position.y) / 120.0;
+                        gl_Position.x = floor(100.0 * gl_Position.x) / 100.0;
+                        gl_Position.y = floor(80.0 * gl_Position.y) / 80.0;
                         gl_Position.xyz *= snapToPixel.w;
             `,
         },
