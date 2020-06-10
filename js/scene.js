@@ -439,14 +439,14 @@ function update_ui(){
     }
     else if(once3){
         if(clicked3bool){
-            // document.getElementById("info3").style.opacity = "" + Math.round(fader) + "%";
+            document.getElementById("info3").style.opacity = "" + Math.round(fader) + "%";
 
             container2.offsetParent.style.opacity = "" + Math.round(100.0 - fader) + "%";
             container2.offsetParent.style.pointerEvents = "none";
         }
         else{
             var temp = battery.filter;
-            // document.getElementById("info3").style.opacity = "" + Math.round(fader) + "%";
+            document.getElementById("info3").style.opacity = "" + Math.round(fader) + "%";
 
             container2.offsetParent.style.opacity = "" + Math.round(100.0 - fader) + "%";
             if(100.0 - fader > 98.0)
