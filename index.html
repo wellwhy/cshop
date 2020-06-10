@@ -125,32 +125,91 @@ var ps1_shader_material = new THREE.ShaderMaterial({
 
 var model_3;
 loader.load( 'shoppe_no_door.glb', async ( gltf ) => {
-    const textures = await gltf.parser.getDependencies( 'texture' );
-    console.log(textures);
+    //const textures = await gltf.parser.getDependencies( 'texture' );
+    // console.log(textures);
+    load_txtrs();
+    console.log(txtrs);
     model_3 = gltf.scene || gltf.scenes[0];
-    console.log(model_3);
-    //var tex_i = [4,0,1,3,2,-1,-1,-1,-1];
-    //var tex_i = [4,0,1,3,2,-1,-1,-1,-1];
-    //[tree,hut,?,moss,hut,?,?,buildings,skyscraper]
-    var tex_i = [5,0,0,0,0,0,4,2,3];
-    var i = 0;
-    gltf.scene.traverse((object) => {
-  if (object.isMesh) {
-    object.frustumCulled = false;
-    object.material.map.minFilter = THREE.NearestFilter;
-    object.material.map.magFilter = THREE.NearestFilter;
-    var temp = object.material.map;
-    object.material = new THREE.ShaderMaterial({ 
-    uniforms: { texture1: {type: "t", value: null} },
-    vertexShader: document.getElementById('vertexShader').textContent,
-    fragmentShader: document.getElementById('fragmentShader').textContent,
-    });
-    object.material.side = THREE.DoubleSide;
-    console.log(tex_i[i]);
-    object.material.uniforms.texture1.value = textures[tex_i[i]];
-    i++;
-}
-});
+    //console.log(model_3);
+
+    for(var i = 0; i < 5; i++){
+        var currChild = model_3.children[i];
+        var currChildName = currChild.name;
+        console.log( currChildName);
+
+        switch(currChildName){
+            case "Trees":
+                currChild.material = new THREE.ShaderMaterial({ 
+                    uniforms: { texture1: {type: "t", value: null} },
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent,
+                    });
+                    currChild.material.side = THREE.DoubleSide;
+                    currChild.material.uniforms.texture1.value = txtrs[0];
+                break;
+            case "Hut":
+                for(var j = 0; j < 5; j++){
+                    var currGroupChild = currChild.children[j];
+                    currGroupChild.material = new THREE.ShaderMaterial({ 
+                        uniforms: { texture1: {type: "t", value: null} },
+                        vertexShader: document.getElementById('vertexShader').textContent,
+                        fragmentShader: document.getElementById('fragmentShader').textContent,
+                        });
+                        currGroupChild.material.side = THREE.DoubleSide;
+                        currGroupChild.material.uniforms.texture1.value = txtrs[1];
+                }
+                break;
+            case "SkrapeTop":
+            currChild.material = new THREE.ShaderMaterial({ 
+                    uniforms: { texture1: {type: "t", value: null} },
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent,
+                    });
+                    currChild.material.side = THREE.DoubleSide;
+                    currChild.material.uniforms.texture1.value = txtrs[2];
+                break;
+            case "Buildings":
+            currChild.material = new THREE.ShaderMaterial({ 
+                    uniforms: { texture1: {type: "t", value: null} },
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent,
+                    });
+                    currChild.material.side = THREE.DoubleSide;
+                    currChild.material.uniforms.texture1.value = txtrs[3];
+                break;
+            case "Skraper":
+            currChild.material = new THREE.ShaderMaterial({ 
+                    uniforms: { texture1: {type: "t", value: null} },
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent,
+                    });
+                    currChild.material.side = THREE.DoubleSide;
+                    currChild.material.uniforms.texture1.value = txtrs[4];
+                break;
+        }
+    }
+
+
+
+//     var tex_i = [5,0,0,0,0,0,4,2,3];
+//     var i = 0;
+//     gltf.scene.traverse((object) => {
+//   if (object.isMesh) {
+//     object.frustumCulled = false;
+//     object.material.map.minFilter = THREE.NearestFilter;
+//     object.material.map.magFilter = THREE.NearestFilter;
+//     var temp = object.material.map;
+//     object.material = new THREE.ShaderMaterial({ 
+//     uniforms: { texture1: {type: "t", value: null} },
+//     vertexShader: document.getElementById('vertexShader').textContent,
+//     fragmentShader: document.getElementById('fragmentShader').textContent,
+//     });
+//     object.material.side = THREE.DoubleSide;
+//     console.log(tex_i[i]);
+//     object.material.uniforms.texture1.value = textures[tex_i[i]];
+//     i++;
+// }
+// });
     // gltf.animations.forEach( ( clip ) => {
 
     //     mixer.clipAction( clip ).play();
@@ -350,44 +409,43 @@ function onWindowResize(){
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 animate();
-</script>
 
-<!-- // camera.position.y -= .0001;
-    // //     model_1.traverse( function( object ) {
-    // //         if(object instanceof THREE.Bone) {
-    // //             object.updateMatrixWorld(true);
-    // //         }
-    // //     } );
-    //     model_1.children[0].children[1].skeleton.bones[0].updateWorldMatrix();
-    //     //this will get the world position of the bone (bone[6].position is local or something, not sure)
-    //     // model_1.children[0].children[1].skeleton.update();
-    //     var p = new THREE.Vector3();
-    //     var q = new THREE.Quaternion();
-    //     var s = new THREE.Vector3();
-    //     model_1.children[0].children[1].skeleton.bones[0].matrixWorld.decompose(p, q, s); //sets by reference
-    //     camera.position.x = p.x;
-    //     camera.position.y = p.y;
-    //     camera.position.z = p.z + 1;
-    //     q.normalize();
-    //     //console.log("q: ");
-    //     //console.log(q);
-    //     var up = new THREE.Vector3( 0, 1, 0);
-    //     up.applyQuaternion(q);
-    //     up.normalize();
-    //     var turn = new THREE.Quaternion();
-    //     turn.setFromAxisAngle(up,1.5708);
-    //     //turn.multiply(q);
-    //     //camera.translateOnAxis(up,.5);
-    //     axesHelper.position.x = p.x;
-    //     axesHelper.position.y = p.y;
-    //     axesHelper.position.z = p.z;
-    //     //axesHelper.setRotationFromQuaternion(q);
-    //     //camera.setRotationFromQuaternion(turn);
-    //     //camera.rotate
-    //     //console.log("q:");
-    //     var rotation = new THREE.Euler().setFromQuaternion( q );
-    //     rotation.x *= 57.2958;
-    //     rotation.y *= 57.2958;
-    //     rotation.z *= 57.2958;
-    //     //console.log(rotation);
-    //     //camera.rotateOnAxis(up,1.5708); -->
+var txtrs;
+function load_txtrs(){
+    var trees = new THREE.TextureLoader().load( 'txtrs/tree.png' );
+        trees.wrapS = THREE.RepeatWrapping;
+        trees.wrapT = THREE.RepeatWrapping;
+        trees.minFilter = THREE.NearestFilter;
+        trees.magFilter = THREE.NearestFilter;
+
+    var hut = new THREE.TextureLoader().load( 'txtrs/hut.png' );
+        hut.wrapS = THREE.RepeatWrapping;
+        hut.wrapT = THREE.RepeatWrapping;
+        hut.minFilter = THREE.NearestFilter;
+        hut.magFilter = THREE.NearestFilter;
+
+    var skrapetop = new THREE.TextureLoader().load( 'txtrs/skrapetop.png' );
+        skrapetop.wrapS = THREE.RepeatWrapping;
+        skrapetop.wrapT = THREE.RepeatWrapping;
+        skrapetop.minFilter = THREE.NearestFilter;
+        skrapetop.magFilter = THREE.NearestFilter;
+
+    var buildings = new THREE.TextureLoader().load( 'txtrs/buildings.png' );
+        buildings.flipY = false;
+        buildings.wrapS = THREE.RepeatWrapping;
+        buildings.wrapT = THREE.RepeatWrapping;
+        buildings.minFilter = THREE.NearestFilter;
+        buildings.magFilter = THREE.NearestFilter;
+
+    var skraper = new THREE.TextureLoader().load( 'txtrs/skraper.png' );
+        skraper.wrapS = THREE.RepeatWrapping;
+        skraper.wrapT = THREE.RepeatWrapping;
+        skraper.minFilter = THREE.NearestFilter;
+        skraper.magFilter = THREE.NearestFilter;
+
+    txtrs = [trees, hut, skrapetop, buildings, skraper];
+    for(var i = 0; i < 5; i++){
+        txtrs[i].flipY = false;
+    }
+}
+</script>
