@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 body{
     background: #000000;
@@ -227,6 +227,7 @@ loader.load( 'shoppe_no_door.glb', async ( gltf ) => {
 
 var model_2;
 var mixer2;
+var action2;
 loader.load( 'unsubdivided_door_with_animation.glb', function ( gltf ) {
     model_2 = gltf.scene;
     //console.log(model_1);
@@ -274,9 +275,8 @@ loader.load( 'unsubdivided_door_with_animation.glb', function ( gltf ) {
     // helper.visible = true;
     // helper.frustumCulled = false;
     mixer2 = new THREE.AnimationMixer( model_2 );
-    var action2 = mixer2.clipAction( gltf.animations[ 5 ] );
+    action2 = mixer2.clipAction( gltf.animations[ 5 ] );
     action2.setLoop( THREE.LoopOnce );
-	action2.play();
     // gltf.animations.forEach( ( clip ) => {
 
     //     mixer.clipAction( clip ).play();
@@ -299,6 +299,7 @@ var model_1;
 var mixer;
 var skeleton_1;
 var helper_2;
+var clawaction;
 loader.load( 'final_animation_claw.fbx.glb', function ( gltf ) {
     model_1 = gltf.scene;
     //console.log(model_1);
@@ -346,10 +347,9 @@ loader.load( 'final_animation_claw.fbx.glb', function ( gltf ) {
     // helper.visible = true;
     // helper.frustumCulled = false;
     mixer = new THREE.AnimationMixer( model_1 );
-    var action = mixer.clipAction( gltf.animations[ 7 ] );
-    action.setLoop( THREE.LoopOnce );
-    //action.timeScale = 4;
-	action.play();
+    clawaction = mixer.clipAction( gltf.animations[ 7 ] );
+    clawaction.setLoop( THREE.LoopOnce );
+    // action.timeScale = 4;
     // gltf.animations.forEach( ( clip ) => {
 
     //     mixer.clipAction( clip ).play();
@@ -379,7 +379,13 @@ loader.load( 'final_animation_claw.fbx.glb', function ( gltf ) {
 renderer.setSize(container.offsetWidth,container.offsetHeight);
 container.appendChild( renderer.domElement );
 var once = true;
+var onceanim = true;
 function animate() {
+    if(clawaction && action2 && onceanim){
+        clawaction.play();
+        action2.play();
+        onceanim = false;
+    }
     if(model_1 && once){
         once = false;
         console.log("once");
@@ -389,10 +395,13 @@ function animate() {
         camera.position.x = .0001;
         camera.position.y = .025;
     }
-    
     var id = requestAnimationFrame( animate );
-    if(id == 5200) //stops animation when in black box
+    var worldpos = new THREE.Vector3();
+    camera.getWorldPosition(worldpos);
+    if(worldpos.x < -21.0 && worldpos.y > 154.0){ //stops animation when in black box
         cancelAnimationFrame( id );
+        window.location.href = "https://w311why.com/cshop/store.html";
+    }
     var delta = clock.getDelta();
     if ( mixer ) mixer.update( delta );
     if ( mixer2 ) mixer2.update( delta );
