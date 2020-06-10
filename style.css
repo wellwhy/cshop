@@ -101,6 +101,7 @@ body {
 
 #box_for_container_4 {
     position: relative;
+    overflow: hidden;
 }
 
 #three_js_container_4 {
