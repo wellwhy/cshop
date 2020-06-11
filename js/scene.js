@@ -1,5 +1,4 @@
 document.onmousemove = updateMousePos;
-
 //container: html div to hold renderer
     //items have an onclick function for interactivity
 //renderer: renders to 1 container ONLY, tied to it
@@ -10,6 +9,7 @@ document.onmousemove = updateMousePos;
 ////
 //CONTAINER TOTEM
 var container = document.getElementById("three_js_container_1");
+    container.onclick = clicked;
 const renderer = new THREE.WebGLRenderer({container,alpha: true,antialias:false});
 var ripplescene = new THREE.Scene();
 var fractalscene = new THREE.Scene();
@@ -258,6 +258,16 @@ function clicked3(event){
     // test.play();
 }
 
+function clicked(event){
+    console.log("clicked");
+    if(once2)
+        clicked2();
+    if(once3)
+        clicked3();
+    // once2 = false;
+    // once3 = false;
+}
+
 function animate() {
     interactive_items();
 
@@ -441,8 +451,10 @@ function update_ui(){
             document.getElementById("info2").style.opacity = "" + Math.round(fader) + "%";
 
             container3.offsetParent.style.opacity = "" + Math.round(100.0 - fader) + "%";
-            if(100.0 - fader > 98.0)
+            if(100.0 - fader > 98.0){
                 container3.offsetParent.style.pointerEvents = "auto";
+                once2 = false;
+            }
         }
     }
     else if(once3){
@@ -457,8 +469,10 @@ function update_ui(){
             document.getElementById("info3").style.opacity = "" + Math.round(fader) + "%";
 
             container2.offsetParent.style.opacity = "" + Math.round(100.0 - fader) + "%";
-            if(100.0 - fader > 98.0)
+            if(100.0 - fader > 98.0){
                 container2.offsetParent.style.pointerEvents = "auto";
+                once3 = false;
+            }
         }
     }
     renderer3.setPixelRatio(battery.charged);
