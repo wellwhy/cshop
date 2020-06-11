@@ -133,7 +133,7 @@ var ps1_shader_material = new THREE.ShaderMaterial({
 
 
 var model_3;
-loader.load( 'deliver_sub_4.glb', async ( gltf ) => {
+loader.load( 'city_no_textures.glb', async ( gltf ) => {
     //const textures = await gltf.parser.getDependencies( 'texture' );
     // console.log(textures);
     load_txtrs();
@@ -455,7 +455,7 @@ function load_txtrs(){
         buildings.minFilter = THREE.NearestFilter;
         buildings.magFilter = THREE.NearestFilter;
 
-    var skraper = new THREE.TextureLoader().load( 'txtrs/skraper.png' );
+    var skraper = new THREE.TextureLoader().load( 'txtrs/skraperlower.png' );
         skraper.wrapS = THREE.RepeatWrapping;
         skraper.wrapT = THREE.RepeatWrapping;
         skraper.minFilter = THREE.NearestFilter;
