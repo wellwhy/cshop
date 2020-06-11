@@ -70,8 +70,8 @@
 </div>
 
 
-<iframe style="display:none;" width="0%" height="0" scrolling="no" frameborder="no" allow="autoplay" 
-src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/816733732&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="display:none"></a></div>
+<!-- <iframe style="display:none;" width="0%" height="0" scrolling="no" frameborder="no" allow="autoplay" 
+src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/816733732&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="display:none"></a></div> -->
 </body>
 
 <script src="js/anime.min.js"></script>
@@ -130,6 +130,17 @@ if(isMobile){
     cont3.style.left = "40px";
     cont3.style.width = "300px";
     cont3.style.height = "300px";
+}
+
+if(!isMobile && window.devicePixelRatio > 1.0){
+    console.log("what the fuck");
+    var cont2 = document.getElementById("box_for_container_2");
+    cont2.style.width = "200px";
+    cont2.style.height = "200px";
+
+    var cont3 = document.getElementById("box_for_container_3");
+    cont3.style.width = "200px";
+    cont3.style.height = "200px";  
 }
 // banner.style.width = "" + window.innerWidth + "px";
 //items, square
